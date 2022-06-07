@@ -10,6 +10,7 @@ import (
 	"time"
 
    "encoding/binary"
+   "encoding/hex"
     "hash/crc32"
 
 	"github.com/pquerna/cachecontrol"
@@ -108,7 +109,8 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			if m.cfg.AddStatusHeader {
 				w.Header().Set(cacheHeader, cacheHitStatus)
-				log.Printf("cache log: key: %s, hit: %s, hash: %s", key, cacheHitStatus, keyHash(key))
+				h := keyHash(key)
+				log.Printf("cache log: key: %s, hit: %s, hash: %s/%s/%s/%s", key, cacheHitStatus, hex.EncodeToString(h[0:1]),hex.EncodeToString(h[1:2]),hex.EncodeToString(h[2:3]),hex.EncodeToString(h[3:4]))
 			}
 			w.WriteHeader(data.Status)
 			_, _ = w.Write(data.Body)
