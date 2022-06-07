@@ -9,6 +9,9 @@ import (
 	"net/http"
 	"time"
 
+   "encoding/binary"
+    "hash/crc32"
+
 	"github.com/pquerna/cachecontrol"
 )
 
@@ -74,6 +77,16 @@ type cacheData struct {
 	Body    []byte
 }
 
+func keyHash(key string) [4]byte {
+    h := crc32.Checksum([]byte(key), crc32.IEEETable)
+
+    var b [4]byte
+
+    binary.LittleEndian.PutUint32(b[:], h)
+
+    return b
+}
+
 // ServeHTTP serves an HTTP request.
 func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	cs := cacheMissStatus
@@ -95,7 +108,7 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			if m.cfg.AddStatusHeader {
 				w.Header().Set(cacheHeader, cacheHitStatus)
-				log.Println("cache log: " + key  + " > " + cacheHitStatus)
+				log.Printf("cache log: key: %s, hit: %s, hash: %s", key, cacheHitStatus, keyHash(key))
 			}
 			w.WriteHeader(data.Status)
 			_, _ = w.Write(data.Body)
