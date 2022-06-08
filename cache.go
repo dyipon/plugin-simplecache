@@ -152,6 +152,10 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (time.Duration, bool) {
 	log.Printf("cacheable status: %d", status)
 
+	if status != 200 {
+		return 0, false
+	}
+
 	reasons, expireBy, err := cachecontrol.CachableResponseWriter(r, status, w, cachecontrol.Options{})
 	if err != nil || len(reasons) > 0 {
 		return 0, false
