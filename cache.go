@@ -141,12 +141,17 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error serializing cache item: %v", err)
 	}
 
+	
+
+
 	if err = m.cache.Set(key, b, expiry); err != nil {
 		log.Printf("Error setting cache item: %v", err)
 	}
 }
 
 func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (time.Duration, bool) {
+	log.Printf("cacheable status: %d", status)
+
 	reasons, expireBy, err := cachecontrol.CachableResponseWriter(r, status, w, cachecontrol.Options{})
 	if err != nil || len(reasons) > 0 {
 		return 0, false
@@ -158,6 +163,7 @@ func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (t
 	if maxExpiry < expiry {
 		expiry = maxExpiry
 	}
+
 
 	return expiry, true
 }
