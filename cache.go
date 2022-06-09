@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"time"
 
-   "encoding/binary"
-   "encoding/hex"
-    "hash/crc32"
+	// "encoding/binary"
+	// "encoding/hex"
+	// "hash/crc32"
 
 	"github.com/pquerna/cachecontrol"
 )
@@ -78,15 +78,15 @@ type cacheData struct {
 	Body    []byte
 }
 
-func keyHash(key string) [4]byte {
-    h := crc32.Checksum([]byte(key), crc32.IEEETable)
-
-    var b [4]byte
-
-    binary.LittleEndian.PutUint32(b[:], h)
-
-    return b
-}
+// func keyHash(key string) [4]byte {
+// h := crc32.Checksum([]byte(key), crc32.IEEETable)
+//
+// var b [4]byte
+//
+// binary.LittleEndian.PutUint32(b[:], h)
+//
+// return b
+// }
 
 // ServeHTTP serves an HTTP request.
 func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -109,8 +109,8 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			if m.cfg.AddStatusHeader {
 				w.Header().Set(cacheHeader, cacheHitStatus)
-				h := keyHash(key)
-				log.Printf("cache log: key: %s, hit: %s, hash: %s/%s/%s/%s", key, cacheHitStatus, hex.EncodeToString(h[0:1]),hex.EncodeToString(h[1:2]),hex.EncodeToString(h[2:3]),hex.EncodeToString(h[3:4]))
+				// h := keyHash(key)
+				// log.Printf("cache log: key: %s, hit: %s, hash: %s/%s/%s/%s", key, cacheHitStatus, hex.EncodeToString(h[0:1]),hex.EncodeToString(h[1:2]),hex.EncodeToString(h[2:3]),hex.EncodeToString(h[3:4]))
 			}
 			w.WriteHeader(data.Status)
 			_, _ = w.Write(data.Body)
@@ -141,16 +141,13 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error serializing cache item: %v", err)
 	}
 
-	
-
-
 	if err = m.cache.Set(key, b, expiry); err != nil {
 		log.Printf("Error setting cache item: %v", err)
 	}
 }
 
 func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (time.Duration, bool) {
-	log.Printf("cacheable status: %d", status)
+	// log.Printf("cacheable status: %d", status)
 
 	if status != 200 {
 		return 0, false
@@ -167,7 +164,6 @@ func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (t
 	if maxExpiry < expiry {
 		expiry = maxExpiry
 	}
-
 
 	return expiry, true
 }
