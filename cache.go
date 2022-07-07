@@ -111,6 +111,7 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set(cacheHeader, cacheHitStatus)
 				// h := keyHash(key)
 				// log.Printf("cache log: key: %s, hit: %s, hash: %s/%s/%s/%s", key, cacheHitStatus, hex.EncodeToString(h[0:1]),hex.EncodeToString(h[1:2]),hex.EncodeToString(h[2:3]),hex.EncodeToString(h[3:4]))
+				log.Printf("cache log: file: %s, hit: %s", key, cacheHitStatus)
 			}
 			w.WriteHeader(data.Status)
 			_, _ = w.Write(data.Body)
