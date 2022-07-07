@@ -7,6 +7,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	// "encoding/binary"
@@ -149,6 +150,10 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (time.Duration, bool) {
 	// log.Printf("cacheable status: %d", status)
+
+	if strings.Contains(r.URL.RawQuery, "?") {
+		return 0, false
+	}
 
 	if status != 200 {
 		return 0, false
