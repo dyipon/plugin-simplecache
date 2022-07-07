@@ -151,6 +151,8 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (time.Duration, bool) {
 	// log.Printf("cacheable status: %d", status)
 
+	log.Printf("cacheable status: %d, rawquery:, %s", status, r.URL.RawQuery)
+
 	if strings.Contains(r.URL.RawQuery, "?") {
 		return 0, false
 	}
