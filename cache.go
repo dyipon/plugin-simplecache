@@ -7,7 +7,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"strings"
+	// "strings"
 	"time"
 
 	// "encoding/binary"
@@ -153,7 +153,7 @@ func (m *cache) cacheable(r *http.Request, w http.ResponseWriter, status int) (t
 
 	log.Printf("cacheable status: %d, rawquery:, %s", status, r.URL.RawQuery)
 
-	if strings.Contains(r.URL.RawQuery, "?") {
+	if len(r.URL.RawQuery) > 1 {
 		return 0, false
 	}
 
