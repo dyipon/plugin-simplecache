@@ -15,6 +15,7 @@ import (
 	// "hash/crc32"
 
 	"github.com/pquerna/cachecontrol"
+	"runtime"
 )
 
 // Config configures the middleware.
@@ -92,6 +93,10 @@ type cacheData struct {
 // ServeHTTP serves an HTTP request.
 func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	cs := cacheMissStatus
+
+	var startMemory runtime.MemStats
+	runtime.ReadMemStats(&startMemory)
+	log.Printf("mem usage: %d", startMemory.Alloc/1024)
 
 	key := cacheKey(r)
 
