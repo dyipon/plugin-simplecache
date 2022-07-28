@@ -96,7 +96,7 @@ func (m *cache) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	var startMemory runtime.MemStats
 	runtime.ReadMemStats(&startMemory)
-	log.Printf("mem usage: %d", startMemory.Alloc/1024)
+	log.Printf("mem usage simplecache: %d", startMemory.Alloc/1024)
 
 	key := cacheKey(r)
 
